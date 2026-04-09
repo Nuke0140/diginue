@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
+import { useTheme } from 'next-themes';
 import {
   Lock,
   Mail,
@@ -13,10 +14,13 @@ import {
   Briefcase,
   ChevronRight,
   Zap,
+  Moon,
+  Sun,
 } from 'lucide-react';
 
 export default function AuthPage() {
   const { login, signup, isAuthView, toggleAuthView } = useAuthStore();
+  const { theme, setTheme } = useTheme();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -32,7 +36,6 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
     await new Promise((r) => setTimeout(r, 1200));
     if (isAuthView) {
       login(email, password);
@@ -44,12 +47,14 @@ export default function AuthPage() {
 
   if (!mounted) return null;
 
+  const isDark = theme === 'dark';
+
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a1a]">
-      {/* Animated gradient orbs background */}
+    <div className={`relative min-h-screen w-full flex items-center justify-center overflow-hidden transition-colors duration-500 ${isDark ? 'bg-[#050505]' : 'bg-[#f5f5f5]'}`}>
+      {/* Animated gradient orbs - black/white only */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-600/30 via-blue-600/20 to-transparent blur-3xl"
+          className={`absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full blur-3xl ${isDark ? 'bg-white/[0.04]' : 'bg-black/[0.04]'}`}
           animate={{
             scale: [1, 1.2, 1],
             x: [0, 80, 0],
@@ -58,7 +63,7 @@ export default function AuthPage() {
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-emerald-600/25 via-cyan-600/15 to-transparent blur-3xl"
+          className={`absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full blur-3xl ${isDark ? 'bg-white/[0.03]' : 'bg-black/[0.03]'}`}
           animate={{
             scale: [1.1, 1, 1.1],
             x: [0, -60, 0],
@@ -67,7 +72,7 @@ export default function AuthPage() {
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-transparent blur-3xl"
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-3xl ${isDark ? 'bg-white/[0.02]' : 'bg-black/[0.02]'}`}
           animate={{
             scale: [1, 1.3, 1],
             rotate: [0, 180, 360],
@@ -78,10 +83,11 @@ export default function AuthPage() {
 
       {/* Grid pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className={`absolute inset-0 ${isDark ? 'opacity-[0.03]' : 'opacity-[0.04]'}`}
         style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
+          backgroundImage: isDark
+            ? 'linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px)'
+            : 'linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }}
       />
@@ -90,7 +96,7 @@ export default function AuthPage() {
       {[...Array(20)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 rounded-full bg-white/20"
+          className={`absolute w-1 h-1 rounded-full ${isDark ? 'bg-white/20' : 'bg-black/15'}`}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -107,6 +113,19 @@ export default function AuthPage() {
         />
       ))}
 
+      {/* Theme toggle - top right */}
+      <motion.button
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        className={`absolute top-6 right-6 z-20 w-10 h-10 rounded-full flex items-center justify-center border transition-all ${isDark ? 'bg-white/[0.06] border-white/10 text-white/60 hover:text-white' : 'bg-black/[0.06] border-black/10 text-black/60 hover:text-black'}`}
+      >
+        {isDark ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
+      </motion.button>
+
       {/* Main auth card */}
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -115,9 +134,9 @@ export default function AuthPage() {
         className="relative z-10 w-full max-w-md mx-4"
       >
         {/* Glass card */}
-        <div className="relative rounded-3xl border border-white/10 bg-white/[0.06] backdrop-blur-2xl shadow-2xl shadow-black/20 p-8 md:p-10">
+        <div className={`relative rounded-3xl border backdrop-blur-2xl shadow-2xl p-8 md:p-10 transition-colors duration-500 ${isDark ? 'bg-white/[0.04] border-white/[0.08] shadow-black/40' : 'bg-white/70 border-black/[0.08] shadow-black/10'}`}>
           {/* Top accent line */}
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
+          <div className={`absolute top-0 left-8 right-8 h-px ${isDark ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent' : 'bg-gradient-to-r from-transparent via-black/20 to-transparent'}`} />
 
           {/* Logo area */}
           <motion.div
@@ -128,22 +147,22 @@ export default function AuthPage() {
           >
             <div className="relative mb-4">
               <motion.div
-                className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-purple-500/25"
+                className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transition-colors duration-500 ${isDark ? 'bg-white text-black shadow-white/10' : 'bg-black text-white shadow-black/15'}`}
                 whileHover={{ rotate: 10, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Briefcase className="w-8 h-8 text-white" />
+                <Briefcase className="w-8 h-8" />
               </motion.div>
               <motion.div
-                className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 border-2 border-[#0a0a1a]"
+                className={`absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 ${isDark ? 'bg-white border-[#050505]' : 'bg-black border-[#f5f5f5]'}`}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+            <h1 className={`text-2xl md:text-3xl font-bold tracking-tight transition-colors duration-500 ${isDark ? 'text-white' : 'text-black'}`}>
               DigiNue
             </h1>
-            <p className="text-white/40 text-sm mt-1.5 tracking-wide">
+            <p className={`text-sm mt-1.5 tracking-wide transition-colors duration-500 ${isDark ? 'text-white/40' : 'text-black/40'}`}>
               Enterprise Business Suite
             </p>
           </motion.div>
@@ -170,14 +189,17 @@ export default function AuthPage() {
                     className="overflow-hidden"
                   >
                     <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                      <User className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 transition-colors ${isDark ? 'text-white/30 group-focus-within:text-white/70' : 'text-black/30 group-focus-within:text-black/70'}`} />
                       <input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Full Name"
                         required
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-purple-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-purple-400/20 transition-all"
+                        className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-sm focus:outline-none transition-all duration-300 ${isDark
+                          ? 'bg-white/[0.06] border-white/10 text-white placeholder:text-white/25 focus:border-white/30 focus:bg-white/[0.08] focus:ring-2 focus:ring-white/10'
+                          : 'bg-black/[0.04] border-black/10 text-black placeholder:text-black/25 focus:border-black/30 focus:bg-black/[0.06] focus:ring-2 focus:ring-black/10'
+                          }`}
                       />
                     </div>
                   </motion.div>
@@ -186,32 +208,38 @@ export default function AuthPage() {
 
               {/* Email field */}
               <div className="relative group">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/30 group-focus-within:text-blue-400 transition-colors" />
+                <Mail className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 transition-colors ${isDark ? 'text-white/30 group-focus-within:text-white/70' : 'text-black/30 group-focus-within:text-black/70'}`} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email Address"
                   required
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-blue-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-sm focus:outline-none transition-all duration-300 ${isDark
+                    ? 'bg-white/[0.06] border-white/10 text-white placeholder:text-white/25 focus:border-white/30 focus:bg-white/[0.08] focus:ring-2 focus:ring-white/10'
+                    : 'bg-black/[0.04] border-black/10 text-black placeholder:text-black/25 focus:border-black/30 focus:bg-black/[0.06] focus:ring-2 focus:ring-black/10'
+                    }`}
                 />
               </div>
 
               {/* Password field */}
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/30 group-focus-within:text-emerald-400 transition-colors" />
+                <Lock className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 transition-colors ${isDark ? 'text-white/30 group-focus-within:text-white/70' : 'text-black/30 group-focus-within:text-black/70'}`} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   required
-                  className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-emerald-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-emerald-400/20 transition-all"
+                  className={`w-full pl-11 pr-12 py-3.5 rounded-xl border text-sm focus:outline-none transition-all duration-300 ${isDark
+                    ? 'bg-white/[0.06] border-white/10 text-white placeholder:text-white/25 focus:border-white/30 focus:bg-white/[0.08] focus:ring-2 focus:ring-white/10'
+                    : 'bg-black/[0.04] border-black/10 text-black placeholder:text-black/25 focus:border-black/30 focus:bg-black/[0.06] focus:ring-2 focus:ring-black/10'
+                    }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  className={`absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors ${isDark ? 'text-white/30 hover:text-white/60' : 'text-black/30 hover:text-black/60'}`}
                 >
                   {showPassword ? (
                     <EyeOff className="w-4.5 h-4.5" />
@@ -224,16 +252,16 @@ export default function AuthPage() {
               {/* Extra row */}
               {isAuthView && (
                 <div className="flex items-center justify-between text-xs">
-                  <label className="flex items-center gap-2 text-white/40 cursor-pointer hover:text-white/60 transition-colors">
+                  <label className={`flex items-center gap-2 cursor-pointer transition-colors ${isDark ? 'text-white/40 hover:text-white/60' : 'text-black/40 hover:text-black/60'}`}>
                     <input
                       type="checkbox"
-                      className="w-3.5 h-3.5 rounded border-white/20 bg-white/5 accent-purple-500"
+                      className={`w-3.5 h-3.5 rounded border ${isDark ? 'border-white/20 bg-white/5 accent-white' : 'border-black/20 bg-black/5 accent-black'}`}
                     />
                     Remember me
                   </label>
                   <button
                     type="button"
-                    className="text-purple-400/70 hover:text-purple-300 transition-colors"
+                    className={`font-medium transition-colors ${isDark ? 'text-white/50 hover:text-white/80' : 'text-black/50 hover:text-black/80'}`}
                   >
                     Forgot password?
                   </button>
@@ -246,15 +274,18 @@ export default function AuthPage() {
                 disabled={isLoading}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
-                className="relative w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-shadow disabled:opacity-70 overflow-hidden group"
+                className={`relative w-full py-3.5 rounded-xl font-semibold text-sm shadow-lg transition-colors duration-500 overflow-hidden group ${isDark
+                  ? 'bg-white text-black shadow-white/10 hover:shadow-white/15'
+                  : 'bg-black text-white shadow-black/10 hover:shadow-black/15'
+                  }`}
               >
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isDark ? 'bg-white/80' : 'bg-black/80'}`}
                 />
                 <span className="relative flex items-center justify-center gap-2">
                   {isLoading ? (
                     <motion.div
-                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                      className={`w-5 h-5 border-2 rounded-full ${isDark ? 'border-black/30 border-t-black' : 'border-white/30 border-t-white'}`}
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
@@ -271,9 +302,9 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-white/25 text-xs uppercase tracking-wider">or</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className={`flex-1 h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
+            <span className={`text-xs uppercase tracking-wider ${isDark ? 'text-white/25' : 'text-black/25'}`}>or</span>
+            <div className={`flex-1 h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
           </div>
 
           {/* Social buttons */}
@@ -283,7 +314,10 @@ export default function AuthPage() {
                 key={provider}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="py-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-white/60 text-xs font-medium hover:bg-white/[0.1] hover:text-white/80 transition-all"
+                className={`py-2.5 rounded-xl border text-xs font-medium transition-all duration-500 ${isDark
+                  ? 'bg-white/[0.04] border-white/[0.08] text-white/50 hover:bg-white/[0.08] hover:text-white/80'
+                  : 'bg-black/[0.03] border-black/[0.08] text-black/50 hover:bg-black/[0.06] hover:text-black/80'
+                  }`}
               >
                 {provider}
               </motion.button>
@@ -292,11 +326,11 @@ export default function AuthPage() {
 
           {/* Toggle auth view */}
           <div className="mt-6 text-center">
-            <p className="text-white/35 text-sm">
+            <p className={`text-sm ${isDark ? 'text-white/35' : 'text-black/35'}`}>
               {isAuthView ? "Don't have an account?" : 'Already have an account?'}
               <button
                 onClick={toggleAuthView}
-                className="ml-1.5 text-purple-400 hover:text-purple-300 font-medium transition-colors inline-flex items-center gap-0.5"
+                className={`ml-1.5 font-medium transition-colors inline-flex items-center gap-0.5 ${isDark ? 'text-white/70 hover:text-white' : 'text-black/70 hover:text-black'}`}
               >
                 {isAuthView ? 'Sign Up' : 'Sign In'}
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -310,7 +344,7 @@ export default function AuthPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="flex items-center justify-center gap-1.5 mt-6 text-white/20 text-xs"
+          className={`flex items-center justify-center gap-1.5 mt-6 text-xs ${isDark ? 'text-white/20' : 'text-black/20'}`}
         >
           <Zap className="w-3.5 h-3.5" />
           <span>Powered by DigiNue Platform</span>

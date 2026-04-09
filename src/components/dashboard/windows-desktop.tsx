@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
+import { useTheme } from 'next-themes';
 import {
   LogOut,
   LayoutDashboard,
@@ -21,105 +22,47 @@ import {
   Wifi,
   Battery,
   Volume2,
-  Sun,
   Zap,
+  Moon,
+  Sun,
 } from 'lucide-react';
-
 interface Module {
   id: string;
   name: string;
   icon: React.ElementType;
-  gradient: string;
-  span: string; // tailwind col-span
+  shade: string; // grayscale shade classes
+  span: string;
   description: string;
 }
 
-const modules: Module[] = [
-  {
-    id: 'dashboard',
-    name: 'Dashboard',
-    icon: LayoutDashboard,
-    gradient: 'from-blue-500 to-cyan-400',
-    span: 'col-span-2',
-    description: 'Overview & Analytics',
-  },
-  {
-    id: 'erp',
-    name: 'ERP',
-    icon: Factory,
-    gradient: 'from-orange-500 to-amber-400',
-    span: 'col-span-1',
-    description: 'Enterprise Resource',
-  },
-  {
-    id: 'crm',
-    name: 'CRM',
-    icon: Users,
-    gradient: 'from-rose-500 to-pink-400',
-    span: 'col-span-1',
-    description: 'Customer Relations',
-  },
-  {
-    id: 'marketing',
-    name: 'Marketing',
-    icon: Megaphone,
-    gradient: 'from-violet-500 to-purple-400',
-    span: 'col-span-2',
-    description: 'Campaigns & Outreach',
-  },
-  {
-    id: 'sales',
-    name: 'Sales & Lead',
-    icon: TrendingUp,
-    gradient: 'from-emerald-500 to-green-400',
-    span: 'col-span-1',
-    description: 'Pipeline & Deals',
-  },
-  {
-    id: 'finance',
-    name: 'Finance',
-    icon: DollarSign,
-    gradient: 'from-yellow-500 to-orange-400',
-    span: 'col-span-1',
-    description: 'Accounts & Budget',
-  },
-  {
-    id: 'growth',
-    name: 'Refresh & Growth',
-    icon: Sprout,
-    gradient: 'from-teal-500 to-emerald-400',
-    span: 'col-span-2',
-    description: 'Strategy & Expansion',
-  },
-  {
-    id: 'analytics',
-    name: 'Analytics & BI',
-    icon: BarChart3,
-    gradient: 'from-sky-500 to-blue-400',
-    span: 'col-span-1',
-    description: 'Insights & Reports',
-  },
-  {
-    id: 'automation',
-    name: 'Automation',
-    icon: Bot,
-    gradient: 'from-fuchsia-500 to-pink-400',
-    span: 'col-span-1',
-    description: 'Workflows & AI',
-  },
-  {
-    id: 'settings',
-    name: 'Settings',
-    icon: Settings,
-    gradient: 'from-gray-500 to-slate-400',
-    span: 'col-span-2',
-    description: 'Configuration & Preferences',
-  },
+const darkModules: Module[] = [
+  { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard, shade: 'bg-white/[0.12] hover:bg-white/[0.16]', span: 'col-span-2', description: 'Overview & Analytics' },
+  { id: 'erp', name: 'ERP', icon: Factory, shade: 'bg-white/[0.08] hover:bg-white/[0.12]', span: 'col-span-1', description: 'Enterprise Resource' },
+  { id: 'crm', name: 'CRM', icon: Users, shade: 'bg-white/[0.18] hover:bg-white/[0.22]', span: 'col-span-1', description: 'Customer Relations' },
+  { id: 'marketing', name: 'Marketing', icon: Megaphone, shade: 'bg-white/[0.06] hover:bg-white/[0.10]', span: 'col-span-2', description: 'Campaigns & Outreach' },
+  { id: 'sales', name: 'Sales & Lead', icon: TrendingUp, shade: 'bg-white/[0.14] hover:bg-white/[0.18]', span: 'col-span-1', description: 'Pipeline & Deals' },
+  { id: 'finance', name: 'Finance', icon: DollarSign, shade: 'bg-white/[0.10] hover:bg-white/[0.14]', span: 'col-span-1', description: 'Accounts & Budget' },
+  { id: 'growth', name: 'Refresh & Growth', icon: Sprout, shade: 'bg-white/[0.16] hover:bg-white/[0.20]', span: 'col-span-2', description: 'Strategy & Expansion' },
+  { id: 'analytics', name: 'Analytics & BI', icon: BarChart3, shade: 'bg-white/[0.07] hover:bg-white/[0.11]', span: 'col-span-1', description: 'Insights & Reports' },
+  { id: 'automation', name: 'Automation', icon: Bot, shade: 'bg-white/[0.13] hover:bg-white/[0.17]', span: 'col-span-1', description: 'Workflows & AI' },
+  { id: 'settings', name: 'Settings', icon: Settings, shade: 'bg-white/[0.05] hover:bg-white/[0.09]', span: 'col-span-2', description: 'Configuration & Preferences' },
 ];
 
-function ModuleTile({ module, index }: { module: Module; index: number }) {
-  const [hovered, setHovered] = useState(false);
+const lightModules: Module[] = [
+  { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard, shade: 'bg-black/[0.08] hover:bg-black/[0.12]', span: 'col-span-2', description: 'Overview & Analytics' },
+  { id: 'erp', name: 'ERP', icon: Factory, shade: 'bg-black/[0.05] hover:bg-black/[0.09]', span: 'col-span-1', description: 'Enterprise Resource' },
+  { id: 'crm', name: 'CRM', icon: Users, shade: 'bg-black/[0.12] hover:bg-black/[0.16]', span: 'col-span-1', description: 'Customer Relations' },
+  { id: 'marketing', name: 'Marketing', icon: Megaphone, shade: 'bg-black/[0.04] hover:bg-black/[0.08]', span: 'col-span-2', description: 'Campaigns & Outreach' },
+  { id: 'sales', name: 'Sales & Lead', icon: TrendingUp, shade: 'bg-black/[0.10] hover:bg-black/[0.14]', span: 'col-span-1', description: 'Pipeline & Deals' },
+  { id: 'finance', name: 'Finance', icon: DollarSign, shade: 'bg-black/[0.07] hover:bg-black/[0.11]', span: 'col-span-1', description: 'Accounts & Budget' },
+  { id: 'growth', name: 'Refresh & Growth', icon: Sprout, shade: 'bg-black/[0.11] hover:bg-black/[0.15]', span: 'col-span-2', description: 'Strategy & Expansion' },
+  { id: 'analytics', name: 'Analytics & BI', icon: BarChart3, shade: 'bg-black/[0.06] hover:bg-black/[0.10]', span: 'col-span-1', description: 'Insights & Reports' },
+  { id: 'automation', name: 'Automation', icon: Bot, shade: 'bg-black/[0.09] hover:bg-black/[0.13]', span: 'col-span-1', description: 'Workflows & AI' },
+  { id: 'settings', name: 'Settings', icon: Settings, shade: 'bg-black/[0.03] hover:bg-black/[0.07]', span: 'col-span-2', description: 'Configuration & Preferences' },
+];
 
+function ModuleTile({ module, index, isDark }: { module: Module; index: number; isDark: boolean }) {
+  const [hovered, setHovered] = useState(false);
   const isWide = module.span === 'col-span-2';
 
   return (
@@ -139,14 +82,15 @@ function ModuleTile({ module, index }: { module: Module; index: number }) {
         whileHover={{ scale: 1.03, y: -4 }}
         whileTap={{ scale: 0.98 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        className={`relative h-36 md:h-44 rounded-2xl bg-gradient-to-br ${module.gradient} overflow-hidden shadow-lg`}
+        className={`relative h-36 md:h-44 rounded-2xl ${module.shade} overflow-hidden transition-colors duration-300 border ${isDark ? 'border-white/[0.06]' : 'border-black/[0.06]'}`}
       >
-        {/* Animated background pattern */}
+        {/* Dot pattern */}
         <motion.div
-          className="absolute inset-0 opacity-10"
+          className={`absolute inset-0 opacity-[0.06]`}
           style={{
-            backgroundImage:
-              'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+            backgroundImage: isDark
+              ? 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)'
+              : 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
           animate={{ backgroundPosition: hovered ? '12px 12px' : '0px 0px' }}
@@ -155,16 +99,13 @@ function ModuleTile({ module, index }: { module: Module; index: number }) {
 
         {/* Light sweep on hover */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+          className={`absolute inset-0 -translate-x-full ${isDark ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent' : 'bg-gradient-to-r from-transparent via-white/30 to-transparent'}`}
           animate={{ translateX: hovered ? '200%' : '-100%' }}
           transition={{ duration: 0.8, ease: 'easeInOut' }}
         />
 
-        {/* Bottom accent glow */}
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"
-          animate={{ opacity: hovered ? 0.3 : 0.15 }}
-        />
+        {/* Bottom gradient */}
+        <div className={`absolute bottom-0 left-0 right-0 h-1/2 ${isDark ? 'bg-gradient-to-t from-black/30 to-transparent' : 'bg-gradient-to-t from-white/40 to-transparent'}`} />
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-between p-5">
@@ -176,24 +117,24 @@ function ModuleTile({ module, index }: { module: Module; index: number }) {
               }}
               transition={{ duration: 0.4 }}
             >
-              <module.icon className="w-8 h-8 md:w-10 md:h-10 text-white drop-shadow-lg" />
+              <module.icon className={`w-8 h-8 md:w-10 md:h-10 drop-shadow-lg ${isDark ? 'text-white' : 'text-black'}`} />
             </motion.div>
             {isWide && (
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0 }}
                 transition={{ duration: 0.2 }}
-                className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${isDark ? 'bg-white/10' : 'bg-black/10'}`}
               >
-                <ChevronDown className="w-4 h-4 text-white -rotate-90" />
+                <ChevronDown className={`w-4 h-4 -rotate-90 ${isDark ? 'text-white' : 'text-black'}`} />
               </motion.div>
             )}
           </div>
           <div>
-            <h3 className="text-white font-bold text-base md:text-lg tracking-tight">
+            <h3 className={`font-bold text-base md:text-lg tracking-tight ${isDark ? 'text-white' : 'text-black'}`}>
               {module.name}
             </h3>
-            <p className="text-white/60 text-xs md:text-sm mt-0.5">
+            <p className={`text-xs md:text-sm mt-0.5 ${isDark ? 'text-white/50' : 'text-black/50'}`}>
               {module.description}
             </p>
           </div>
@@ -205,43 +146,55 @@ function ModuleTile({ module, index }: { module: Module; index: number }) {
 
 export default function WindowsDesktop() {
   const { user, logout } = useAuthStore();
+  const { theme, setTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const isDark = theme === 'dark' || (!theme && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const modules = isDark ? darkModules : lightModules;
 
   const currentHour = new Date().getHours();
   const greeting =
     currentHour < 12 ? 'Good Morning' : currentHour < 18 ? 'Good Afternoon' : 'Good Evening';
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] flex flex-col">
-      {/* Windows 8 top bar */}
-      <header className="h-8 bg-[#1a1a2e] border-b border-white/5 flex items-center justify-between px-4">
-        {/* Left: quick access */}
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${isDark ? 'bg-[#050505]' : 'bg-[#f5f5f5]'}`}>
+      {/* Top bar */}
+      <header className={`h-8 border-b flex items-center justify-between px-4 transition-colors duration-500 ${isDark ? 'bg-[#050505] border-white/[0.05]' : 'bg-[#f5f5f5] border-black/[0.05]'}`}>
+        {/* Left: brand */}
         <div className="flex items-center gap-3">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center gap-1.5 text-white/40 hover:text-white/70 cursor-pointer transition-colors"
+            className={`flex items-center gap-1.5 cursor-pointer transition-colors ${isDark ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'}`}
           >
             <Zap className="w-3.5 h-3.5" />
             <span className="text-[11px] font-semibold tracking-wide">DIGINUE</span>
           </motion.div>
         </div>
 
-        {/* Right: system tray */}
-        <div className="flex items-center gap-3 text-white/40">
-          <Wifi className="w-3 h-3" />
-          <Battery className="w-3.5 h-3.5" />
-          <Volume2 className="w-3 h-3" />
-          <Sun className="w-3 h-3" />
-          <span className="text-[10px] font-mono">
-            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </span>
+        {/* Right: system tray + theme toggle */}
+        <div className="flex items-center gap-3">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            className={`transition-colors ${isDark ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'}`}
+          >
+            {isDark ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+          </motion.button>
+          <div className={`flex items-center gap-3 ${isDark ? 'text-white/40' : 'text-black/40'}`}>
+            <Wifi className="w-3 h-3" />
+            <Battery className="w-3.5 h-3.5" />
+            <Volume2 className="w-3 h-3" />
+            <span className="text-[10px] font-mono">
+              {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* Main content area */}
+      {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Search bar */}
+        {/* Search bar area */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -249,10 +202,10 @@ export default function WindowsDesktop() {
           className="flex items-center justify-between px-6 md:px-10 pt-6 pb-4"
         >
           <div>
-            <h2 className="text-white/90 text-xl md:text-2xl font-bold tracking-tight">
-              {greeting}, <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{user?.name || 'User'}</span>
+            <h2 className={`text-xl md:text-2xl font-bold tracking-tight transition-colors duration-500 ${isDark ? 'text-white/90' : 'text-black/90'}`}>
+              {greeting}, <span className={isDark ? 'text-white' : 'text-black'}>{user?.name || 'User'}</span>
             </h2>
-            <p className="text-white/30 text-sm mt-0.5">
+            <p className={`text-sm mt-0.5 transition-colors duration-500 ${isDark ? 'text-white/30' : 'text-black/30'}`}>
               Welcome to your enterprise command center
             </p>
           </div>
@@ -261,13 +214,19 @@ export default function WindowsDesktop() {
             {/* Search */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/10 w-64"
+              className={`hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl border w-64 transition-colors duration-500 ${isDark
+                ? 'bg-white/[0.04] border-white/[0.08]'
+                : 'bg-white/60 border-black/[0.08]'
+                }`}
             >
-              <Search className="w-4 h-4 text-white/30" />
+              <Search className={`w-4 h-4 ${isDark ? 'text-white/30' : 'text-black/30'}`} />
               <input
                 type="text"
                 placeholder="Search modules..."
-                className="bg-transparent text-white/70 text-sm placeholder:text-white/25 focus:outline-none flex-1"
+                className={`bg-transparent text-sm focus:outline-none flex-1 transition-colors ${isDark
+                  ? 'text-white/70 placeholder:text-white/25'
+                  : 'text-black/70 placeholder:text-black/25'
+                  }`}
               />
             </motion.div>
 
@@ -275,10 +234,13 @@ export default function WindowsDesktop() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white/50 hover:text-white/80 hover:bg-white/[0.1] transition-all"
+              className={`relative w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-500 ${isDark
+                ? 'bg-white/[0.04] border-white/[0.08] text-white/50 hover:text-white/80 hover:bg-white/[0.08]'
+                : 'bg-white/60 border-black/[0.08] text-black/50 hover:text-black/80 hover:bg-white/80'
+                }`}
             >
               <Bell className="w-4.5 h-4.5" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[9px] text-white flex items-center justify-center font-bold">
+              <span className={`absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] text-white flex items-center justify-center font-bold ${isDark ? 'bg-white text-black' : 'bg-black'}`}>
                 3
               </span>
             </motion.button>
@@ -289,7 +251,10 @@ export default function WindowsDesktop() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-purple-500/20"
+                className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-lg transition-colors duration-500 ${isDark
+                  ? 'bg-white text-black shadow-white/10'
+                  : 'bg-black text-white shadow-black/10'
+                  }`}
               >
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </motion.button>
@@ -299,18 +264,23 @@ export default function WindowsDesktop() {
                 <motion.div
                   initial={{ opacity: 0, y: -5, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="absolute right-0 top-12 w-56 rounded-xl bg-[#252545] border border-white/10 shadow-xl p-2 z-50"
+                  className={`absolute right-0 top-12 w-56 rounded-xl border shadow-xl p-2 z-50 transition-colors ${isDark
+                    ? 'bg-[#1a1a1a] border-white/[0.08]'
+                    : 'bg-white border-black/[0.08]'
+                    }`}
                 >
-                  <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-white/90 text-sm font-semibold">
+                  <div className={`px-3 py-2 border-b mb-1 ${isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'}`}>
+                    <p className={`text-sm font-semibold ${isDark ? 'text-white/90' : 'text-black/90'}`}>
                       {user?.name || 'User'}
                     </p>
-                    <p className="text-white/40 text-xs">{user?.email || 'user@example.com'}</p>
+                    <p className={`text-xs ${isDark ? 'text-white/40' : 'text-black/40'}`}>{user?.email || 'user@example.com'}</p>
                   </div>
                   <button
                     onClick={logout}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.06] text-sm transition-all"
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${isDark
+                      ? 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                      : 'text-black/60 hover:text-black hover:bg-black/[0.06]'
+                      }`}
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
@@ -321,23 +291,27 @@ export default function WindowsDesktop() {
           </div>
         </motion.div>
 
-        {/* Module tiles grid - Windows 8 style */}
+        {/* Module tiles grid */}
         <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-4 max-w-6xl mx-auto">
             {modules.map((module, index) => (
-              <ModuleTile key={module.id} module={module} index={index} />
+              <ModuleTile key={module.id} module={module} index={index} isDark={isDark} />
             ))}
           </div>
         </div>
       </main>
 
-      {/* Windows 8 bottom taskbar */}
-      <footer className="h-10 bg-[#1a1a2e]/80 backdrop-blur-xl border-t border-white/5 flex items-center justify-center">
+      {/* Bottom taskbar */}
+      <footer className={`h-10 backdrop-blur-xl border-t flex items-center justify-center transition-colors duration-500 ${isDark
+        ? 'bg-[#050505]/80 border-white/[0.05]'
+        : 'bg-[#f5f5f5]/80 border-black/[0.05]'
+        }`}
+      >
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 rounded-full bg-white/20"
+              className={`w-2 h-2 rounded-full ${isDark ? 'bg-white/20' : 'bg-black/20'}`}
               animate={{ opacity: [0.2, 0.8, 0.2] }}
               transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
             />
