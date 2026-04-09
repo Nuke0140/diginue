@@ -61,7 +61,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       },
       isAuthenticated: true,
       showAuth: false,
-      currentPage: 'login',
     });
   },
 
@@ -80,7 +79,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       },
       isAuthenticated: true,
       showAuth: false,
-      currentPage: 'profile',
     });
   },
 
