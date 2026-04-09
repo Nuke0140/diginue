@@ -24,17 +24,22 @@ interface User {
   role?: string;
 }
 
+export type ModuleId = 'dashboard' | 'crm' | 'erp' | 'marketing' | 'sales' | 'finance' | 'growth' | 'analytics' | 'automation' | 'settings';
+
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   showAuth: boolean;
   currentPage: AuthPage;
+  activeModule: ModuleId | null;
   pendingOtpNumber: string;
 
   login: (email: string, password: string) => void;
   signup: (data: { name: string; email: string; password: string }) => void;
   logout: () => void;
   navigateTo: (page: AuthPage) => void;
+  openModule: (module: ModuleId) => void;
+  closeModule: () => void;
   setPendingOtpNumber: (number: string) => void;
   updateProfile: (data: Partial<User>) => void;
 }
@@ -88,11 +93,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: false,
       showAuth: true,
       currentPage: 'login',
+      activeModule: null,
       pendingOtpNumber: '',
     });
   },
 
   navigateTo: (page: AuthPage) => set({ currentPage: page }),
+  openModule: (module: ModuleId) => set({ activeModule: module }),
+  closeModule: () => set({ activeModule: null }),
   setPendingOtpNumber: (number: string) => set({ pendingOtpNumber: number }),
   updateProfile: (data: Partial<User>) =>
     set((state) => ({

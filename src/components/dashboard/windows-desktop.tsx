@@ -62,7 +62,7 @@ const lightModules: Module[] = [
   { id: 'settings', name: 'Settings', icon: Settings, shade: 'bg-black/[0.03] hover:bg-black/[0.07]', span: 'col-span-2', description: 'Configuration & Preferences' },
 ];
 
-function ModuleTile({ module, index, isDark }: { module: Module; index: number; isDark: boolean }) {
+function ModuleTile({ module, index, isDark, onClick }: { module: Module; index: number; isDark: boolean; onClick?: () => void }) {
   const [hovered, setHovered] = useState(false);
   const isWide = module.span === 'col-span-2';
 
@@ -77,6 +77,7 @@ function ModuleTile({ module, index, isDark }: { module: Module; index: number; 
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
       className={`relative ${module.span} cursor-pointer group`}
     >
       <motion.div
@@ -146,7 +147,7 @@ function ModuleTile({ module, index, isDark }: { module: Module; index: number; 
 }
 
 export default function WindowsDesktop() {
-  const { user, logout } = useAuthStore();
+  const { user, logout, openModule } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isDark = theme === 'dark' || (!theme && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -302,7 +303,17 @@ export default function WindowsDesktop() {
         <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-4 max-w-6xl mx-auto">
             {modules.map((module, index) => (
-              <ModuleTile key={module.id} module={module} index={index} isDark={isDark} />
+              <ModuleTile
+                key={module.id}
+                module={module}
+                index={index}
+                isDark={isDark}
+                onClick={() => {
+                  if (module.id === 'crm') {
+                    openModule('crm');
+                  }
+                }}
+              />
             ))}
           </div>
         </div>

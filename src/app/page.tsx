@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
 import WindowsDesktop from '@/components/dashboard/windows-desktop';
+import CrmLayout from '@/modules/crm/crm-layout';
 import LoginPage from '@/modules/auth/login-page';
 import RegisterPage from '@/modules/auth/register-page';
 import ForgotPasswordPage from '@/modules/auth/forgot-password-page';
@@ -23,10 +24,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   sessions: SessionsPage,
 };
 
-// Pages that are part of the auth flow (before login)
 const authEntryPages = new Set(['login', 'register', 'forgot-password', 'otp']);
-
-// Pages that are management pages (after login, inside dashboard)
 const managementPages = new Set(['profile', 'roles', 'team-invite', 'sessions']);
 
 const pageVariants = {
@@ -36,45 +34,35 @@ const pageVariants = {
 };
 
 export default function Home() {
-  const { isAuthenticated, currentPage } = useAuthStore();
-
-  // Determine what to show:
-  // 1. Authenticated + on auth entry page (login/register/etc) → Dashboard
-  // 2. Authenticated + on management page (profile/roles/etc) → That page
-  // 3. Authenticated + currentPage not recognized → Dashboard
-  // 4. Not authenticated → Show auth entry page or management page as fallback
+  const { isAuthenticated, currentPage, activeModule } = useAuthStore();
 
   const isAuthEntry = authEntryPages.has(currentPage);
   const isManagement = managementPages.has(currentPage);
-
-  // Show dashboard when: authenticated AND (on auth entry page OR page not recognized)
-  const showDashboard = isAuthenticated && (isAuthEntry || !isManagement);
-
-  // Show a specific management page when: authenticated AND on a known management page
-  const showManagement = isAuthenticated && isManagement;
-
-  // Show auth pages when: NOT authenticated
+  const showDashboard = isAuthenticated && (isAuthEntry || !isManagement) && !activeModule;
+  const showManagement = isAuthenticated && isManagement && !activeModule;
   const showAuth = !isAuthenticated;
+  const showModule = isAuthenticated && !!activeModule;
 
   const CurrentPage = pageComponents[currentPage];
 
   let content: React.ReactNode;
 
-  if (showDashboard) {
+  if (showModule && activeModule === 'crm') {
+    content = <CrmLayout />;
+  } else if (showDashboard) {
     content = <WindowsDesktop />;
   } else if (showManagement && CurrentPage) {
     content = <CurrentPage />;
   } else if (showAuth && CurrentPage) {
     content = <CurrentPage />;
   } else {
-    // Fallback
     content = isAuthenticated ? <WindowsDesktop /> : <LoginPage />;
   }
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={showDashboard ? 'dashboard' : currentPage}
+        key={showModule ? activeModule : showDashboard ? 'dashboard' : currentPage}
         variants={pageVariants}
         initial="initial"
         animate="animate"
