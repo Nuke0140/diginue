@@ -7,10 +7,11 @@ import { useTheme } from 'next-themes';
 import { useSalesStore } from './sales-store';
 import { useAuthStore } from '@/store/auth-store';
 import {
-  Search, Bell, Plus, ArrowLeft, Moon, Sun, Menu,
+  Search, Bell, Plus, Moon, Sun, Menu,
   Users, Radio, Shield, Handshake, BarChart3, DollarSign,
   Trophy, Clock, FileText, TrendingUp, ChevronRight,
-  Sparkles, SlidersHorizontal, Command, LogOut, BrainCircuit, Zap
+  Sparkles, SlidersHorizontal, Command, LogOut, BrainCircuit, Zap,
+  Home, ArrowLeft, ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -82,13 +83,14 @@ function PageContent() {
 
 export default function SalesLayout() {
   const { theme, setTheme } = useTheme();
-  const { user, logout } = useAuthStore();
-  const { currentPage, sidebarOpen, setSidebarOpen, goBack, navigateTo } = useSalesStore();
+  const { user, logout, closeModule } = useAuthStore();
+  const { currentPage, sidebarOpen, setSidebarOpen, goBack, goForward, canGoBack, canGoForward, navigateTo } = useSalesStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isDark = theme === 'dark';
 
-  const isDetailPage = currentPage.endsWith('-detail');
   const currentLabel = navItems.find(n => n.id === currentPage)?.label || 'Sales';
+  const canBack = canGoBack();
+  const canForward = canGoForward();
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -101,17 +103,98 @@ export default function SalesLayout() {
           'h-14 border-b flex items-center justify-between px-4 gap-4 shrink-0 transition-colors',
           isDark ? 'bg-[#0a0a0a] border-white/[0.06]' : 'bg-white border-black/[0.06]'
         )}>
-          <div className="flex items-center gap-3">
-            {isDetailPage && (
-              <Button variant="ghost" size="icon" onClick={goBack}
-                className={cn('shrink-0 h-8 w-8 rounded-lg', isDark ? 'hover:bg-white/[0.06]' : 'hover:bg-black/[0.06]')}>
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden shrink-0 h-8 w-8 rounded-lg">
+          <div className="flex items-center gap-1.5">
+            {/* Home Button - Return to Dashboard */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={closeModule}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg',
+                    isDark
+                      ? 'hover:bg-white/[0.06] text-white/50 hover:text-white'
+                      : 'hover:bg-black/[0.06] text-black/50 hover:text-black'
+                  )}
+                >
+                  <Home className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Home Dashboard</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Navigation Divider */}
+            <div className={cn(
+              'w-px h-5 mx-1',
+              isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
+            )} />
+
+            {/* Back Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={goBack}
+                  disabled={!canBack}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg transition-opacity',
+                    !canBack && 'opacity-30 cursor-not-allowed',
+                    canBack && isDark && 'hover:bg-white/[0.06]',
+                    canBack && !isDark && 'hover:bg-black/[0.06]'
+                  )}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Go Back</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Forward Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={goForward}
+                  disabled={!canForward}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg transition-opacity',
+                    !canForward && 'opacity-30 cursor-not-allowed',
+                    canForward && isDark && 'hover:bg-white/[0.06]',
+                    canForward && !isDark && 'hover:bg-black/[0.06]'
+                  )}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Go Forward</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Navigation Divider */}
+            <div className={cn(
+              'w-px h-5 mx-1',
+              isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
+            )} />
+
+            {/* Mobile sidebar toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden shrink-0 h-8 w-8 rounded-lg"
+            >
               <Menu className="w-4 h-4" />
             </Button>
+
+            {/* Logo & Breadcrumb */}
             <div className="flex items-center gap-2">
               <Image src="/logo.png" alt="DigiNue" width={24} height={16} className="object-contain rounded-sm" />
               <span className={cn('text-sm font-semibold tracking-wide hidden sm:block', isDark ? 'text-white/60' : 'text-black/60')}>SALES</span>

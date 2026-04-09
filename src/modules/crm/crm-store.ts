@@ -9,6 +9,8 @@ interface CrmState {
   selectedDealId: string | null;
   sidebarOpen: boolean;
   searchQuery: string;
+  history: string[];
+  forwardStack: string[];
 
   navigateTo: (page: CrmPage) => void;
   selectContact: (id: string) => void;
@@ -18,6 +20,9 @@ interface CrmState {
   setSidebarOpen: (open: boolean) => void;
   setSearchQuery: (query: string) => void;
   goBack: () => void;
+  goForward: () => void;
+  canGoBack: () => boolean;
+  canGoForward: () => boolean;
 }
 
 export const useCrmStore = create<CrmState>((set, get) => ({
@@ -28,22 +33,90 @@ export const useCrmStore = create<CrmState>((set, get) => ({
   selectedDealId: null,
   sidebarOpen: true,
   searchQuery: '',
+  history: [],
+  forwardStack: [],
 
-  navigateTo: (page: CrmPage) => set({ currentPage: page }),
-  selectContact: (id: string) => set({ selectedContactId: id, currentPage: 'contact-detail' as CrmPage }),
-  selectCompany: (id: string) => set({ selectedCompanyId: id, currentPage: 'company-detail' as CrmPage }),
-  selectLead: (id: string) => set({ selectedLeadId: id, currentPage: 'lead-detail' as CrmPage }),
-  selectDeal: (id: string) => set({ selectedDealId: id, currentPage: 'deal-detail' as CrmPage }),
+  navigateTo: (page: CrmPage) => {
+    const { currentPage, forwardStack } = get();
+    if (currentPage === page) return;
+    set({
+      history: [...get().history, currentPage],
+      forwardStack: [],
+      currentPage: page,
+    });
+  },
+
+  selectContact: (id: string) => {
+    const { currentPage } = get();
+    set({
+      history: [...get().history, currentPage],
+      forwardStack: [],
+      selectedContactId: id,
+      currentPage: 'contact-detail' as CrmPage,
+    });
+  },
+
+  selectCompany: (id: string) => {
+    const { currentPage } = get();
+    set({
+      history: [...get().history, currentPage],
+      forwardStack: [],
+      selectedCompanyId: id,
+      currentPage: 'company-detail' as CrmPage,
+    });
+  },
+
+  selectLead: (id: string) => {
+    const { currentPage } = get();
+    set({
+      history: [...get().history, currentPage],
+      forwardStack: [],
+      selectedLeadId: id,
+      currentPage: 'lead-detail' as CrmPage,
+    });
+  },
+
+  selectDeal: (id: string) => {
+    const { currentPage } = get();
+    set({
+      history: [...get().history, currentPage],
+      forwardStack: [],
+      selectedDealId: id,
+      currentPage: 'deal-detail' as CrmPage,
+    });
+  },
+
   setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
   setSearchQuery: (query: string) => set({ searchQuery: query }),
+
   goBack: () => {
-    const { currentPage } = get();
-    switch (currentPage) {
-      case 'contact-detail': set({ currentPage: 'contacts', selectedContactId: null }); break;
-      case 'company-detail': set({ currentPage: 'companies', selectedCompanyId: null }); break;
-      case 'lead-detail': set({ currentPage: 'leads', selectedLeadId: null }); break;
-      case 'deal-detail': set({ currentPage: 'deals', selectedDealId: null }); break;
-      default: set({ currentPage: 'contacts' }); break;
-    }
+    const { history, currentPage, forwardStack } = get();
+    if (history.length === 0) return;
+    const newHistory = [...history];
+    const prevPage = newHistory.pop()!;
+    set({
+      history: newHistory,
+      forwardStack: [...forwardStack, currentPage],
+      currentPage: prevPage as CrmPage,
+      selectedContactId: prevPage === 'contacts' ? null : get().selectedContactId,
+      selectedCompanyId: prevPage === 'companies' ? null : get().selectedCompanyId,
+      selectedLeadId: prevPage === 'leads' ? null : get().selectedLeadId,
+      selectedDealId: prevPage === 'deals' ? null : get().selectedDealId,
+    });
   },
+
+  goForward: () => {
+    const { forwardStack, currentPage, history } = get();
+    if (forwardStack.length === 0) return;
+    const newForward = [...forwardStack];
+    const nextPage = newForward.pop()!;
+    set({
+      history: [...history, currentPage],
+      forwardStack: newForward,
+      currentPage: nextPage as CrmPage,
+    });
+  },
+
+  canGoBack: () => get().history.length > 0,
+  canGoForward: () => get().forwardStack.length > 0,
 }));
