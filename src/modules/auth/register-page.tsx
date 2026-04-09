@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
@@ -286,6 +287,16 @@ export default function RegisterPage() {
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
         className="w-full max-w-lg"
       >
+        {/* Logo header - visible on mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.1 }}
+          className="flex justify-center mb-6 lg:hidden"
+        >
+          <Image src="/logo.png" alt="DigiNue" width={120} height={80} priority className="object-contain" />
+        </motion.div>
+
         <Card className="rounded-2xl border-gray-200/60 shadow-sm">
           <CardContent className="p-6 md:p-8">
             {/* Header */}

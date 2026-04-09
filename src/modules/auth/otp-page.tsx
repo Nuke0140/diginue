@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -187,6 +188,16 @@ export default function OtpPage() {
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
         className="w-full max-w-md"
       >
+        {/* Logo header - visible on mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.05 }}
+          className="flex justify-center mb-4 lg:hidden"
+        >
+          <Image src="/logo.png" alt="DigiNue" width={120} height={80} priority className="object-contain" />
+        </motion.div>
+
         {/* Back to Login */}
         {!isVerified && (
           <motion.button
