@@ -14,26 +14,32 @@ import {
 } from 'lucide-react';
 import { mockCampaigns, mockAttributionChannels, mockAIGrowthInsights, mockWorkflows, mockSocialPosts, marketingDashboardStats } from '@/modules/marketing/data/mock-data';
 import { useMarketingStore } from '@/modules/marketing/marketing-store';
-import type { MarketingPage, Campaign, InsightType, AttributionChannel } from '@/modules/marketing/types';
+import type { MarketingPage, Campaign, InsightType, AttributionChannel, AIGrowthInsight as AIInsightTypeFull } from '@/modules/marketing/types';
 
 const iconMap: Record<string, React.ElementType> = {
   Users, Target, DollarSign, TrendingUp, BarChart3, PieChart, Activity, Heart, Share2, Wallet: DollarSign,
 };
 
-const insightIcons: Record<InsightType, React.ElementType> = {
-  growth: TrendingUp,
-  optimization: Sparkles,
-  risk: Shield,
-  trend: Activity,
-  budget: DollarSign,
+const insightIcons: Record<string, React.ElementType> = {
+  'channel-recommendation': TrendingUp,
+  'budget-optimization': Sparkles,
+  'trend-prediction': Activity,
+  'churn-campaign': Shield,
+  'fatigue-detection': AlertTriangle,
+  'roi-improvement': DollarSign,
+  'audience-expansion': Users,
+  'content-optimization': Lightbulb,
 };
 
-const insightColors: Record<InsightType, { color: string; bg: string }> = {
-  growth: { color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  optimization: { color: 'text-sky-400', bg: 'bg-sky-500/10' },
-  risk: { color: 'text-red-400', bg: 'bg-red-500/10' },
-  trend: { color: 'text-violet-400', bg: 'bg-violet-500/10' },
-  budget: { color: 'text-amber-400', bg: 'bg-amber-500/10' },
+const insightColors: Record<string, { color: string; bg: string }> = {
+  'channel-recommendation': { color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  'budget-optimization': { color: 'text-sky-400', bg: 'bg-sky-500/10' },
+  'trend-prediction': { color: 'text-violet-400', bg: 'bg-violet-500/10' },
+  'churn-campaign': { color: 'text-red-400', bg: 'bg-red-500/10' },
+  'fatigue-detection': { color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  'roi-improvement': { color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  'audience-expansion': { color: 'text-sky-400', bg: 'bg-sky-500/10' },
+  'content-optimization': { color: 'text-violet-400', bg: 'bg-violet-500/10' },
 };
 
 function formatINR(num: number): string {
@@ -74,6 +80,19 @@ export default function MarketingDashboardPage() {
   const topInsights = useMemo(() => mockAIGrowthInsights.slice(0, 3), []);
   const totalBudget = useMemo(() => activeCampaigns.reduce((s: number, c: Campaign) => s + c.budget, 0), [activeCampaigns]);
   const totalSpend = useMemo(() => activeCampaigns.reduce((s: number, c: Campaign) => s + c.spend, 0), [activeCampaigns]);
+
+  const kpiStats = useMemo(() => [
+    { label: 'Total Leads', value: marketingDashboardStats.totalLeads.toLocaleString(), icon: Users, color: 'text-blue-400', bg: isDark ? 'bg-blue-500/10' : 'bg-blue-50', change: 12.4, changeLabel: 'vs last month' },
+    { label: 'MQLs', value: marketingDashboardStats.mqls.toLocaleString(), icon: Target, color: 'text-emerald-400', bg: isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', change: 8.2, changeLabel: 'qualified this quarter' },
+    { label: 'SQLs', value: marketingDashboardStats.sqls.toLocaleString(), icon: TrendingUp, color: 'text-violet-400', bg: isDark ? 'bg-violet-500/10' : 'bg-violet-50', change: 15.7, changeLabel: 'sales qualified' },
+    { label: 'Campaign ROI', value: `${marketingDashboardStats.campaignROI}%`, icon: BarChart3, color: 'text-emerald-400', bg: isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', change: 22.1, changeLabel: 'avg across campaigns' },
+    { label: 'Cost Per Lead', value: `₹${marketingDashboardStats.cpl}`, icon: DollarSign, color: 'text-amber-400', bg: isDark ? 'bg-amber-500/10' : 'bg-amber-50', change: -5.3, changeLabel: 'reduced from ₹362' },
+    { label: 'Customer Acq.', value: `₹${(marketingDashboardStats.cac / 1000).toFixed(1)}K`, icon: PieChart, color: 'text-sky-400', bg: isDark ? 'bg-sky-500/10' : 'bg-sky-50', change: -8.1, changeLabel: 'CAC improvement' },
+    { label: 'ROAS', value: `${marketingDashboardStats.roas}x`, icon: Activity, color: 'text-emerald-400', bg: isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', change: 14.5, changeLabel: 'return on ad spend' },
+    { label: 'Retention Rate', value: `${marketingDashboardStats.retentionRate}%`, icon: Heart, color: 'text-pink-400', bg: isDark ? 'bg-pink-500/10' : 'bg-pink-50', change: 3.2, changeLabel: 'month-over-month' },
+    { label: 'Referral Growth', value: `${marketingDashboardStats.referralGrowth}%`, icon: Share2, color: 'text-emerald-400', bg: isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', change: 28.6, changeLabel: 'referral signups' },
+    { label: 'Top Channel', value: marketingDashboardStats.channelContribution[0]?.channel || 'Google', icon: Zap, color: 'text-amber-400', bg: isDark ? 'bg-amber-500/10' : 'bg-amber-50', change: marketingDashboardStats.channelContribution[0]?.percent || 0, changeLabel: `${marketingDashboardStats.channelContribution[0]?.percent || 0}% contribution` },
+  ], [isDark]);
 
   const quickNavItems: { label: string; value: number | string; page: MarketingPage; icon: React.ElementType }[] = [
     { label: 'Campaigns', value: mockCampaigns.length, page: 'campaigns', icon: Megaphone },
@@ -122,8 +141,7 @@ export default function MarketingDashboardPage() {
 
         {/* KPI Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {marketingDashboardStats.map((stat, i) => {
-            const IconComp = iconMap[stat.icon] || Activity;
+          {kpiStats.map((stat, i) => {
             const isPositive = stat.change > 0;
             return (
               <motion.div
@@ -140,12 +158,12 @@ export default function MarketingDashboardPage() {
                   <span className={cn('text-[11px] font-medium uppercase tracking-wider', isDark ? 'text-white/40' : 'text-black/40')}>
                     {stat.label}
                   </span>
-                  <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', isDark ? 'bg-white/[0.06]' : 'bg-black/[0.06]')}>
-                    <IconComp className={cn('w-3.5 h-3.5', isDark ? 'text-white/50' : 'text-black/50')} />
+                  <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', stat.bg)}>
+                    <stat.icon className={cn('w-3.5 h-3.5', stat.color)} />
                   </div>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-2xl font-bold tracking-tight">{stat.formatted}</p>
+                  <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
                   <span className={cn(
                     'flex items-center gap-0.5 text-[10px] font-medium',
                     isPositive ? 'text-emerald-500' : 'text-red-500'
@@ -247,7 +265,7 @@ export default function MarketingDashboardPage() {
               const barWidth = (channel.contribution / 40) * 100;
               return (
                 <motion.div
-                  key={channel.id}
+                  key={channel.channel}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.05, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -264,10 +282,10 @@ export default function MarketingDashboardPage() {
                       <span className="text-sm font-medium">{channel.channel}</span>
                     </div>
                     <span className={cn(
-                      'text-[10px] flex items-center gap-0.5 font-medium',
-                      channel.trend > 0 ? 'text-emerald-500' : 'text-red-500'
+                      'text-[10px] font-semibold',
+                      channel.contribution >= 20 ? 'text-emerald-500' : 'text-amber-500'
                     )}>
-                      {channel.trend > 0 ? '+' : ''}{channel.trend}%
+                      {channel.contribution}%
                     </span>
                   </div>
                   <p className="text-lg font-bold">{formatINR(channel.revenue)}</p>
@@ -280,11 +298,12 @@ export default function MarketingDashboardPage() {
                         initial={{ width: 0 }}
                         animate={{ width: `${barWidth}%` }}
                         transition={{ delay: 0.6 + i * 0.1, duration: 0.5 }}
-                        className="h-full rounded-full bg-emerald-500"
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: channel.color }}
                       />
                     </div>
                     <div className="flex justify-between mt-1.5">
-                      <span className={cn('text-[10px]', isDark ? 'text-white/30' : 'text-black/30')}>{channel.leads.toLocaleString()} leads</span>
+                      <span className={cn('text-[10px]', isDark ? 'text-white/30' : 'text-black/30')}>{channel.contribution}% share</span>
                       <span className={cn('text-[10px]', isDark ? 'text-white/30' : 'text-black/30')}>{channel.conversions} conversions</span>
                     </div>
                   </div>
