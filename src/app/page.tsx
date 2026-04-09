@@ -1,34 +1,68 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAuthStore } from '@/store/auth-store';
-import AuthPage from '@/components/auth/auth-page';
+import { useAuthStore, type AuthPage } from '@/store/auth-store';
 import WindowsDesktop from '@/components/dashboard/windows-desktop';
+import LoginPage from '@/modules/auth/login-page';
+import RegisterPage from '@/modules/auth/register-page';
+import ForgotPasswordPage from '@/modules/auth/forgot-password-page';
+import OtpPage from '@/modules/auth/otp-page';
+import ProfilePage from '@/modules/auth/profile-page';
+import RolesPage from '@/modules/auth/roles-page';
+import TeamInvitePage from '@/modules/auth/team-invite-page';
+import SessionsPage from '@/modules/auth/sessions-page';
+
+const authPages: Record<string, React.ComponentType> = {
+  login: LoginPage,
+  register: RegisterPage,
+  'forgot-password': ForgotPasswordPage,
+  otp: OtpPage,
+  profile: ProfilePage,
+  roles: RolesPage,
+  'team-invite': TeamInvitePage,
+  sessions: SessionsPage,
+};
+
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -12 },
+};
 
 export default function Home() {
-  const { showAuth, isAuthenticated } = useAuthStore();
+  const { isAuthenticated, currentPage } = useAuthStore();
+
+  const isAuthFlow = ['login', 'register', 'forgot-password', 'otp'].includes(
+    currentPage
+  );
+
+  const showDashboard = isAuthenticated && !isAuthFlow;
+
+  const CurrentPage = authPages[currentPage];
 
   return (
     <AnimatePresence mode="wait">
-      {showAuth || !isAuthenticated ? (
+      {showDashboard ? (
         <motion.div
-          key="auth"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.4 }}
+          key="dashboard"
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          <AuthPage />
+          <WindowsDesktop />
         </motion.div>
       ) : (
         <motion.div
-          key="dashboard"
-          initial={{ opacity: 0, scale: 1.02 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          key={currentPage}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          <WindowsDesktop />
+          {CurrentPage && <CurrentPage />}
         </motion.div>
       )}
     </AnimatePresence>
