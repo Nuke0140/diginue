@@ -225,3 +225,133 @@ Stage Summary:
 - Full dark/light mode, responsive design, Framer Motion animations
 - AI intelligence: win probability gauge, risk scoring, competitor analysis, discount risk, next best actions
 - All data sourced from mockSalesDeals, mockForecasts, mockTeamPerformance, revenueMetrics, mockLeadSources
+
+---
+Task ID: 2-b
+Agent: Foundation Routing Agent
+Task: Create marketing store, layout, and update page.tsx routing
+
+Work Log:
+- Created types.ts with MarketingPage type (19 page values)
+- Created marketing-store.ts with Zustand state management + history navigation (navigateTo, selectCampaign, goBack, goForward)
+- Created marketing-layout.tsx with 5 sidebar sections (Growth Intelligence, Channels, Audience & Retention, Analytics & Optimization, Operations), 19 nav items, topbar (Home, Back/Forward, Search, Date Range, Filters, Notifications badge "5", AI Assistant with purple pulse, Quick Campaign CTA, Theme toggle, User avatar dropdown), sidebar footer with marketing alert card, AnimatePresence page routing
+- Created 19 placeholder page components (Construction "Coming soon" pattern with dark/light mode support)
+- Updated page.tsx to route 'marketing' activeModule to MarketingLayout
+
+Stage Summary:
+- /home/z/my-project/src/modules/marketing/types.ts created
+- /home/z/my-project/src/modules/marketing/marketing-store.ts created
+- /home/z/my-project/src/modules/marketing/marketing-layout.tsx created
+- /home/z/my-project/src/app/page.tsx updated with marketing routing
+- 19 placeholder pages created for all MarketingPage values
+- All files pass lint with zero errors
+- Dev server running with 200 status on all routes
+
+---
+Task ID: 2-a
+Agent: Foundation Data Agent
+Task: Create marketing module types.ts and mock-data.ts
+
+Work Log:
+- Created types.ts with 25+ type definitions covering all 19 pages
+  - MarketingPage navigation type (19 values)
+  - Campaign types (Campaign, CampaignStatus, CampaignType, CampaignChannel)
+  - Workflow automation types (Workflow, WorkflowNode, WorkflowNodeType, WorkflowStatus)
+  - Audience segment types (AudienceSegment, SegmentRule, SegmentOperator)
+  - Email campaign types (EmailCampaign, EmailStatus)
+  - WhatsApp campaign types (WhatsAppCampaign)
+  - SMS campaign types (SMSCampaign, SMSType)
+  - Social post types (SocialPost, SocialPlatform, PostStatus)
+  - Ad campaign types (AdCampaign, AdPlatform, AdStatus)
+  - Attribution types (AttributionChannel, AttributionModel)
+  - Funnel types (Funnel, FunnelStep)
+  - A/B testing types (ABTest, ABTestVariant, ABTestStatus, ABTestType)
+  - Retention types (RetentionMetrics)
+  - Loyalty types (LoyaltyMember, LoyaltyTier, Coupon)
+  - Referral types (ReferralEntry)
+  - Content approval types (ContentItem, ContentComment, ApprovalStage, ContentType)
+  - AI growth types (AIGrowthInsight, AIInsightType)
+  - Dashboard stats types (MarketingDashboardStats)
+- Created mock-data.ts with 18 named exports of realistic enterprise marketing data
+  - marketingDashboardStats: 10 KPIs + 6 channel contributions
+  - mockCampaigns: 10 campaigns (INR ₹50K–₹25L budgets, 6 owners, 6 types, mixed statuses)
+  - mockWorkflows: 6 workflows with 5-8 nodes each (canvas x,y 0-800)
+  - mockSegments: 8 audience segments with realistic rule combinations
+  - mockEmailCampaigns: 8 campaigns with varied metrics (18-45% open rates, 2-8% click rates)
+  - mockWhatsAppCampaigns: 6 India-first campaigns (festive, OTP, transactional)
+  - mockSMSCampaigns: 6 SMS campaigns (promotional, transactional, OTP)
+  - mockSocialPosts: 12 posts across 6 platforms with realistic engagement
+  - mockAdCampaigns: 8 ads across Google, Meta, LinkedIn, YouTube, TikTok
+  - mockAttributionChannels: 6 channels with INR revenue data
+  - mockFunnels: 4 funnels with 5 steps each (Ad → Landing → Form → WhatsApp → Sale)
+  - mockABTests: 6 tests with 2-3 variants each, clear winners
+  - mockRetentionMetrics: Single object with 6-month cohort data
+  - mockLoyaltyMembers: 10 members across 5 tiers (bronze → diamond)
+  - mockCoupons: 8 coupons with mixed statuses
+  - mockReferrals: 10 referral entries ranked by performance
+  - mockContentItems: 10 items across 6 approval stages with comments
+  - mockAIGrowthInsights: 8 AI insights across all 8 AIInsightType values
+- Used Indian enterprise context: INR currency, Indian names, IST dates (March-May 2026)
+- Followed ERP module's data pattern exactly (section comments, import style, formatting)
+- All files pass lint with zero errors
+
+Stage Summary:
+- /home/z/my-project/src/modules/marketing/types.ts created (all 25+ types)
+- /home/z/my-project/src/modules/marketing/data/mock-data.ts created (all 18 named exports)
+- ESLint passes with zero errors
+
+---
+Task ID: 2-e
+Agent: Pages Group 3 Agent (Retry)
+Task: Rewrite post-builder, ad-performance, attribution, landing-funnels, ab-testing, retention pages
+
+Work Log:
+- Read mock-data.ts for actual data structures
+- Added missing type definitions (AdCampaign, AttributionChannel, Funnel, FunnelStep, ABTest, ABVariant, RetentionMetrics, CohortData) to types.ts
+- Rewrote post-builder-page.tsx (536 lines) with platform selector tabs, caption editor with AI suggestions, hashtag chips, media upload zone, platform-specific previews (Instagram/Facebook/Twitter/LinkedIn), best posting time card, schedule controls, post checklist
+- Rewrote ad-performance-page.tsx (469 lines) with platform/date filters, 5 KPI cards, platform performance grid with fatigue badges, campaign table with color-coded ROAS, creative performance section, audience fatigue detection with CTR bars
+- Rewrote attribution-page.tsx (411 lines) with 5 model selector tabs, model description, revenue attribution horizontal bar chart, channel contribution table, model comparison grid, conversion path visualization with 3 sample journeys, ROI by channel KPI cards
+- Rewrote landing-funnels-page.tsx (421 lines) with funnel selector tabs, funnel metrics KPIs, vertical funnel visualization with progressive narrowing bars and drop-off indicators, CTA tracking table, funnel comparison bar charts (revenue + conversion rate)
+- Rewrote ab-testing-page.tsx (375 lines) with 3 KPI stats, test cards grid with variant comparison and confidence bars, winner announcements section, test type distribution bars
+- Rewrote retention-page.tsx (431 lines) with 5 KPI cards, cohort retention bar chart with health indicators, churn risk table with re-engage actions, renewal alerts with urgency badges, retention campaign cards
+- All 6 files pass ESLint with zero errors
+
+Stage Summary:
+- 6 marketing pages fully rewritten from placeholders to production-quality implementations (2,643 total lines)
+- All pages use consistent dark/light theme system with useTheme + cn utility
+- Framer Motion animations on all cards, bars, charts, and tables
+- Mock data properly imported and utilized from @/modules/marketing/data/mock-data
+- Types properly referenced from @/modules/marketing/types
+
+---
+Task ID: 2-f
+Agent: Pages Group 4 + Components Agent (Retry)
+Task: Rewrite loyalty, referral, content-approval, ai-growth-intelligence pages + create 11 components
+
+Work Log:
+- Read types.ts and mock-data.ts for data structures
+- Added 10 missing type definitions to types.ts (Campaign, Workflow, WorkflowNode, LoyaltyMember, Coupon, ReferralEntry, ContentItem, ContentComment, AIGrowthInsight, MarketingDashboardStats, ApprovalStage)
+- Rewrote loyalty-page.tsx (280+ lines) with header + Create Reward button, 4 KPI cards, 5-tier distribution (Bronze/Silver/Gold/Platinum/Diamond) with progress bars, Top Members table, Coupons grid with usage bars and copy buttons, Milestones section
+- Rewrote referral-page.tsx (250+ lines) with header + Configure Program button, 4 KPI cards, Leaderboard table with gold/silver/bronze badges, Referral Links card with copy and reward config, Referral Analytics bar chart (6 months), Recent Activities list
+- Rewrote content-approval-page.tsx (350+ lines) with pipeline visualization (Draft→Review→Manager→Client→Publish), stage tabs with counts, Kanban board with type badges and comment counts, Content Detail Panel with stage progress, version history, comments thread, approve/revision/reject buttons, Quick Stats cards
+- Rewrote ai-growth-intelligence-page.tsx (370+ lines) with AI Summary card (purple gradient), 8 Insight Cards grid with confidence bars and Apply buttons, Budget Optimization Panel with current vs recommended allocation bars, Churn Prediction table (5 flagged accounts), Content Trend Predictions (4 topics), Audience Fatigue Map (6 segments with color-coded status)
+- Created 11 shared components in components/ directory:
+  1. campaign-card.tsx — Campaign card with channel icons, ROI chip, status, budget bar
+  2. workflow-canvas.tsx — Canvas with dot grid, positioned nodes, SVG connectors
+  3. audience-chip.tsx — Segment chip with AND/OR operator prefix and count
+  4. content-calendar.tsx — Month/week calendar with posts as colored indicators
+  5. attribution-widget.tsx — Horizontal bar chart for revenue by channel
+  6. roi-widget.tsx — Compact ROI display with trend arrow and color coding
+  7. ai-growth-insight.tsx — Insight card with confidence bar, impact badge, Apply button
+  8. approval-status-chip.tsx — Color-coded stage badge (7 stages)
+  9. post-preview-card.tsx — Social post preview with platform icon, engagement stats
+  10. funnel-step-card.tsx — Funnel step with proportional width and drop-off indicators
+  11. budget-progress-bar.tsx — Budget bar with color thresholds (green/amber/red)
+- All files pass ESLint with zero errors
+
+Stage Summary:
+- 4 marketing pages fully rewritten from placeholders (1,250+ total lines)
+- 11 reusable components created in components/ directory
+- Total: 15 files created/updated
+- All pages use consistent dark/light theme system with useTheme + cn utility
+- Framer Motion animations on cards, bars, charts, and tables
