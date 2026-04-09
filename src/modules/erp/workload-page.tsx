@@ -24,17 +24,17 @@ function getEmployee(id: string) {
   return mockEmployees.find(e => e.id === id);
 }
 
-function getCellColor(allocation: number) {
-  if (allocation === 0) return isDark ? 'bg-white/[0.03]' : 'bg-black/[0.03]';
-  if (allocation <= 30) return isDark ? 'bg-blue-500/20' : 'bg-blue-100';
-  if (allocation <= 60) return isDark ? 'bg-emerald-500/20' : 'bg-emerald-100';
-  if (allocation <= 85) return isDark ? 'bg-amber-500/20' : 'bg-amber-100';
-  return isDark ? 'bg-red-500/20' : 'bg-red-100';
-}
-
 export default function WorkloadPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  function getCellColor(allocation: number) {
+    if (allocation === 0) return isDark ? 'bg-white/[0.03]' : 'bg-black/[0.03]';
+    if (allocation <= 30) return isDark ? 'bg-blue-500/20' : 'bg-blue-100';
+    if (allocation <= 60) return isDark ? 'bg-emerald-500/20' : 'bg-emerald-100';
+    if (allocation <= 85) return isDark ? 'bg-amber-500/20' : 'bg-amber-100';
+    return isDark ? 'bg-red-500/20' : 'bg-red-100';
+  }
 
   const data = useMemo(() => {
     return mockWorkload.map(w => ({
