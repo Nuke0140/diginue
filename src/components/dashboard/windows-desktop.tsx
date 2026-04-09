@@ -311,6 +311,8 @@ export default function WindowsDesktop() {
                 onClick={() => {
                   if (module.id === 'crm') {
                     openModule('crm');
+                  } else if (module.id === 'sales') {
+                    openModule('sales');
                   }
                 }}
               />

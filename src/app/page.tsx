@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
 import WindowsDesktop from '@/components/dashboard/windows-desktop';
 import CrmLayout from '@/modules/crm/crm-layout';
+import SalesLayout from '@/modules/sales/sales-layout';
 import LoginPage from '@/modules/auth/login-page';
 import RegisterPage from '@/modules/auth/register-page';
 import ForgotPasswordPage from '@/modules/auth/forgot-password-page';
@@ -49,6 +50,8 @@ export default function Home() {
 
   if (showModule && activeModule === 'crm') {
     content = <CrmLayout />;
+  } else if (showModule && activeModule === 'sales') {
+    content = <SalesLayout />;
   } else if (showDashboard) {
     content = <WindowsDesktop />;
   } else if (showManagement && CurrentPage) {
