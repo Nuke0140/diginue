@@ -309,10 +309,9 @@ export default function WindowsDesktop() {
                 index={index}
                 isDark={isDark}
                 onClick={() => {
-                  if (module.id === 'crm') {
-                    openModule('crm');
-                  } else if (module.id === 'sales') {
-                    openModule('sales');
+                  const validModules = ['dashboard', 'crm', 'erp', 'marketing', 'sales', 'finance', 'growth', 'analytics', 'automation', 'settings'];
+                  if (validModules.includes(module.id)) {
+                    openModule(module.id as any);
                   }
                 }}
               />
