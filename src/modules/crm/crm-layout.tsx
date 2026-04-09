@@ -21,11 +21,12 @@ import SegmentsPage from './segments-page';
 import LifecyclePage from './lifecycle-page';
 import ContactIntelligencePage from './contact-intelligence-page';
 import {
-  Search, Bell, Plus, ArrowLeft, Moon, Sun, Bot, X,
+  Search, Bell, Plus, Moon, Sun, Bot, X,
   Users, Building2, TrendingUp, Handshake, Activity,
   CheckSquare, FileText, Target, GitBranch, BrainCircuit,
   Menu, ChevronRight, Command, Sparkles, SlidersHorizontal,
-  Download, Upload, MoreHorizontal, LogOut
+  Download, Upload, MoreHorizontal, LogOut,
+  Home, ArrowLeft, ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,13 +91,15 @@ function PageContent() {
 
 export default function CrmLayout() {
   const { theme, setTheme } = useTheme();
-  const { user, logout } = useAuthStore();
-  const { currentPage, sidebarOpen, setSidebarOpen, goBack, navigateTo } = useCrmStore();
+  const { user, logout, closeModule } = useAuthStore();
+  const { currentPage, sidebarOpen, setSidebarOpen, goBack, goForward, canGoBack, canGoForward, navigateTo } = useCrmStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showQuickCreate, setShowQuickCreate] = useState(false);
   const isDark = theme === 'dark';
 
   const isDetailPage = currentPage.endsWith('-detail');
+  const canBack = canGoBack();
+  const canForward = canGoForward();
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -109,21 +112,86 @@ export default function CrmLayout() {
           'h-14 border-b flex items-center justify-between px-4 gap-4 shrink-0 transition-colors',
           isDark ? 'bg-[#0a0a0a] border-white/[0.06]' : 'bg-white border-black/[0.06]'
         )}>
-          <div className="flex items-center gap-3">
-            {/* Back button for detail pages */}
-            {isDetailPage && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={goBack}
-                className={cn(
-                  'shrink-0 h-8 w-8 rounded-lg',
-                  isDark ? 'hover:bg-white/[0.06]' : 'hover:bg-black/[0.06]'
-                )}
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            )}
+          <div className="flex items-center gap-1.5">
+            {/* Home Button - Return to Dashboard */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={closeModule}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg',
+                    isDark
+                      ? 'hover:bg-white/[0.06] text-white/50 hover:text-white'
+                      : 'hover:bg-black/[0.06] text-black/50 hover:text-black'
+                  )}
+                >
+                  <Home className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Home Dashboard</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Navigation Divider */}
+            <div className={cn(
+              'w-px h-5 mx-1',
+              isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
+            )} />
+
+            {/* Back Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={goBack}
+                  disabled={!canBack}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg transition-opacity',
+                    !canBack && 'opacity-30 cursor-not-allowed',
+                    canBack && isDark && 'hover:bg-white/[0.06]',
+                    canBack && !isDark && 'hover:bg-black/[0.06]'
+                  )}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Go Back</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Forward Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={goForward}
+                  disabled={!canForward}
+                  className={cn(
+                    'shrink-0 h-8 w-8 rounded-lg transition-opacity',
+                    !canForward && 'opacity-30 cursor-not-allowed',
+                    canForward && isDark && 'hover:bg-white/[0.06]',
+                    canForward && !isDark && 'hover:bg-black/[0.06]'
+                  )}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Go Forward</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Navigation Divider */}
+            <div className={cn(
+              'w-px h-5 mx-1',
+              isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
+            )} />
 
             {/* Mobile sidebar toggle */}
             <Button
@@ -135,7 +203,7 @@ export default function CrmLayout() {
               <Menu className="w-4 h-4" />
             </Button>
 
-            {/* Logo */}
+            {/* Logo & Breadcrumb */}
             <div className="flex items-center gap-2">
               <Image src="/logo.png" alt="DigiNue" width={24} height={16} className="object-contain rounded-sm" />
               <span className={cn('text-sm font-semibold tracking-wide hidden sm:block', isDark ? 'text-white/60' : 'text-black/60')}>
