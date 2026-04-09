@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import {
   Lock,
   Mail,
@@ -11,7 +12,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Briefcase,
   ChevronRight,
   Zap,
   Moon,
@@ -147,11 +147,18 @@ export default function AuthPage() {
           >
             <div className="relative mb-4">
               <motion.div
-                className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transition-colors duration-500 ${isDark ? 'bg-white text-black shadow-white/10' : 'bg-black text-white shadow-black/15'}`}
-                whileHover={{ rotate: 10, scale: 1.05 }}
+                className="overflow-hidden rounded-2xl"
+                whileHover={{ scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Briefcase className="w-8 h-8" />
+                <Image
+                  src="/logo.png"
+                  alt="DigiNue Logo"
+                  width={140}
+                  height={93}
+                  priority
+                  className="object-contain"
+                />
               </motion.div>
               <motion.div
                 className={`absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 ${isDark ? 'bg-white border-[#050505]' : 'bg-black border-[#f5f5f5]'}`}
