@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
 import { useTheme } from 'next-themes';
@@ -166,7 +167,13 @@ export default function WindowsDesktop() {
             animate={{ opacity: 1 }}
             className={`flex items-center gap-1.5 cursor-pointer transition-colors ${isDark ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'}`}
           >
-            <Zap className="w-3.5 h-3.5" />
+            <Image
+              src="/logo.png"
+              alt="DigiNue"
+              width={20}
+              height={14}
+              className="object-contain rounded-sm"
+            />
             <span className="text-[11px] font-semibold tracking-wide">DIGINUE</span>
           </motion.div>
         </div>
