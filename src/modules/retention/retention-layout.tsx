@@ -64,7 +64,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'customer-health', label: 'Customer Health', icon: HeartPulse },
       { id: 'churn-risk', label: 'Churn Risk', icon: ShieldAlert },
-      { id: 'feedback-nps', label: 'Feedback & NPS', icon: MessageSquareStar },
+      { id: 'feedback-nps', label: 'Feedback & NPS', icon: MessageSquare },
     ],
   },
   {

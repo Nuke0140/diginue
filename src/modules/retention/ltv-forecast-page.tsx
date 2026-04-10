@@ -22,11 +22,11 @@ function formatINR(num: number): string {
 }
 
 const segmentColors = [
-  { bg: isDark => isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', border: isDark ? 'border-emerald-500/20' : 'border-emerald-200', accent: 'text-emerald-400' },
-  { bg: isDark => isDark ? 'bg-violet-500/10' : 'bg-violet-50', border: isDark ? 'border-violet-500/20' : 'border-violet-200', accent: 'text-violet-400' },
-  { bg: isDark => isDark ? 'bg-amber-500/10' : 'bg-amber-50', border: isDark ? 'border-amber-500/20' : 'border-amber-200', accent: 'text-amber-400' },
-  { bg: isDark => isDark ? 'bg-red-500/10' : 'bg-red-50', border: isDark ? 'border-red-500/20' : 'border-red-200', accent: 'text-red-400' },
-  { bg: isDark => isDark ? 'bg-sky-500/10' : 'bg-sky-50', border: isDark ? 'border-sky-500/20' : 'border-sky-200', accent: 'text-sky-400' },
+  { bg: (isDark) => isDark ? 'bg-emerald-500/10' : 'bg-emerald-50', border: (isDark) => isDark ? 'border-emerald-500/20' : 'border-emerald-200', accent: 'text-emerald-400' },
+  { bg: (isDark) => isDark ? 'bg-violet-500/10' : 'bg-violet-50', border: (isDark) => isDark ? 'border-violet-500/20' : 'border-violet-200', accent: 'text-violet-400' },
+  { bg: (isDark) => isDark ? 'bg-amber-500/10' : 'bg-amber-50', border: (isDark) => isDark ? 'border-amber-500/20' : 'border-amber-200', accent: 'text-amber-400' },
+  { bg: (isDark) => isDark ? 'bg-red-500/10' : 'bg-red-50', border: (isDark) => isDark ? 'border-red-500/20' : 'border-red-200', accent: 'text-red-400' },
+  { bg: (isDark) => isDark ? 'bg-sky-500/10' : 'bg-sky-50', border: (isDark) => isDark ? 'border-sky-500/20' : 'border-sky-200', accent: 'text-sky-400' },
 ];
 
 export default function LTVForecastPage() {
