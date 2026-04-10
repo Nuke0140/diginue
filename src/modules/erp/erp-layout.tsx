@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useErpStore } from './erp-store';
 import { useAuthStore } from '@/store/auth-store';
 import ErpDashboardPage from './erp-dashboard-page';
@@ -176,6 +177,7 @@ export default function ErpLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showQuickCreate, setShowQuickCreate] = useState(false);
   const isDark = theme === 'dark';
+  const isMobile = useIsMobile();
 
   const isDetailPage = currentPage.endsWith('-detail');
   const canBack = canGoBack();
@@ -219,7 +221,7 @@ export default function ErpLayout() {
 
             {/* Navigation Divider */}
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -271,7 +273,7 @@ export default function ErpLayout() {
 
             {/* Navigation Divider */}
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -322,7 +324,7 @@ export default function ErpLayout() {
             {/* Filters */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex h-8 w-8 rounded-lg">
                   <SlidersHorizontal className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -332,7 +334,7 @@ export default function ErpLayout() {
             {/* Date Range */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex h-8 w-8 rounded-lg">
                   <Calendar className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -356,7 +358,7 @@ export default function ErpLayout() {
             {/* AI Ops Assistant */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="relative hidden md:flex h-8 w-8 rounded-lg">
                   <Sparkles className="w-4 h-4" />
                   <motion.div
                     className="absolute inset-0 rounded-lg"
@@ -371,7 +373,7 @@ export default function ErpLayout() {
             {/* Quick Create */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex h-8 w-8 rounded-lg">
                   <Plus className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -432,16 +434,30 @@ export default function ErpLayout() {
 
         {/* ========== Main Content ========== */}
         <div className="flex-1 flex overflow-hidden">
+          {/* Mobile backdrop */}
+          <AnimatePresence>
+            {isMobile && sidebarOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
+          </AnimatePresence>
+
           {/* Sidebar */}
           <AnimatePresence>
             {sidebarOpen && (
               <motion.aside
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 256, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
+                initial={isMobile ? { x: -280 } : { width: 0, opacity: 0 }}
+                animate={isMobile ? { x: 0 } : { width: 256, opacity: 1 }}
+                exit={isMobile ? { x: -280 } : { width: 0, opacity: 0 }}
                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
-                  'border-r shrink-0 overflow-hidden hidden md:flex flex-col',
+                  'border-r shrink-0 overflow-hidden flex flex-col fixed md:relative inset-y-0 left-0 z-50',
+                  isMobile && 'w-[280px]',
                   isDark ? 'border-white/[0.06] bg-[#0a0a0a]' : 'border-black/[0.06] bg-white'
                 )}
               >
@@ -465,7 +481,7 @@ export default function ErpLayout() {
                           return (
                             <button
                               key={item.id}
-                              onClick={() => navigateTo(item.id)}
+                              onClick={() => { navigateTo(item.id); if (isMobile) setSidebarOpen(false); }}
                               className={cn(
                                 'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 group',
                                 isActive

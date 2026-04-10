@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useRetentionStore } from './retention-store';
 import { useAuthStore } from '@/store/auth-store';
+import { useIsMobile } from '@/hooks/use-mobile';
 import RetentionDashboardPage from './retention-dashboard-page';
 import CustomerHealthPage from './customer-health-page';
 import ChurnRiskPage from './churn-risk-page';
@@ -143,6 +144,7 @@ export default function RetentionLayout() {
   const { currentPage, sidebarOpen, setSidebarOpen, goBack, goForward, canGoBack, canGoForward, navigateTo } = useRetentionStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isDark = theme === 'dark';
+  const isMobile = useIsMobile();
 
   const canBack = canGoBack();
   const canForward = canGoForward();
@@ -184,7 +186,7 @@ export default function RetentionLayout() {
             </Tooltip>
 
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -235,7 +237,7 @@ export default function RetentionLayout() {
             </Tooltip>
 
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -286,7 +288,7 @@ export default function RetentionLayout() {
             {/* Calendar */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex h-8 w-8 rounded-lg">
                   <Calendar className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -296,7 +298,7 @@ export default function RetentionLayout() {
             {/* Filters */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex h-8 w-8 rounded-lg">
                   <SlidersHorizontal className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -310,7 +312,7 @@ export default function RetentionLayout() {
                   variant="ghost"
                   size="icon"
                   onClick={() => navigateTo('winback-campaigns')}
-                  className="h-8 w-8 rounded-lg"
+                  className="hidden md:flex h-8 w-8 rounded-lg"
                 >
                   <Megaphone className="w-4 h-4" />
                 </Button>
@@ -335,7 +337,7 @@ export default function RetentionLayout() {
             {/* AI Assistant */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-lg">
+                <Button variant="ghost" size="icon" className="hidden md:flex relative h-8 w-8 rounded-lg">
                   <Sparkles className="w-4 h-4" />
                   <motion.div
                     className="absolute inset-0 rounded-lg"
@@ -401,16 +403,30 @@ export default function RetentionLayout() {
 
         {/* ========== Main Content ========== */}
         <div className="flex-1 flex overflow-hidden">
+          {/* Mobile backdrop */}
+          <AnimatePresence>
+            {isMobile && sidebarOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
+          </AnimatePresence>
+
           {/* Sidebar */}
           <AnimatePresence>
             {sidebarOpen && (
               <motion.aside
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 256, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
+                initial={isMobile ? { x: -280, opacity: 0 } : { width: 0, opacity: 0 }}
+                animate={isMobile ? { x: 0, opacity: 1 } : { width: 256, opacity: 1 }}
+                exit={isMobile ? { x: -280, opacity: 0 } : { width: 0, opacity: 0 }}
                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
-                  'border-r shrink-0 overflow-hidden hidden md:flex flex-col',
+                  'border-r shrink-0 overflow-hidden fixed md:relative inset-y-0 left-0 z-50 flex flex-col',
+                  isMobile && 'w-[280px]',
                   isDark ? 'border-white/[0.06] bg-[#0a0a0a]' : 'border-black/[0.06] bg-white'
                 )}
               >
@@ -432,7 +448,7 @@ export default function RetentionLayout() {
                           return (
                             <button
                               key={item.id}
-                              onClick={() => navigateTo(item.id)}
+                              onClick={() => { navigateTo(item.id); if (isMobile) setSidebarOpen(false); }}
                               className={cn(
                                 'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 group',
                                 isActive

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useCrmStore } from './crm-store';
 import { useAuthStore } from '@/store/auth-store';
+import { useIsMobile } from '@/hooks/use-mobile';
 import ContactsPage from './contacts-page';
 import ContactDetailPage from './contact-detail-page';
 import CompaniesPage from './companies-page';
@@ -96,6 +97,7 @@ export default function CrmLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showQuickCreate, setShowQuickCreate] = useState(false);
   const isDark = theme === 'dark';
+  const isMobile = useIsMobile();
 
   const isDetailPage = currentPage.endsWith('-detail');
   const canBack = canGoBack();
@@ -137,7 +139,7 @@ export default function CrmLayout() {
 
             {/* Navigation Divider */}
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -189,7 +191,7 @@ export default function CrmLayout() {
 
             {/* Navigation Divider */}
             <div className={cn(
-              'w-px h-5 mx-1',
+              'w-px h-5 mx-1 hidden md:block',
               isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
             )} />
 
@@ -240,9 +242,11 @@ export default function CrmLayout() {
             {/* Filters */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                  <SlidersHorizontal className="w-4 h-4" />
-                </Button>
+                <div className="hidden md:flex">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </Button>
+                </div>
               </TooltipTrigger>
               <TooltipContent>Filters</TooltipContent>
             </Tooltip>
@@ -264,14 +268,16 @@ export default function CrmLayout() {
             {/* AI Assistant */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-lg">
-                  <Sparkles className="w-4 h-4" />
-                  <motion.div
-                    className="absolute inset-0 rounded-lg"
-                    animate={{ boxShadow: ['0 0 0 0 rgba(139,92,246,0)', '0 0 0 4px rgba(139,92,246,0.1)', '0 0 0 0 rgba(139,92,246,0)'] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                </Button>
+                <div className="hidden md:flex">
+                  <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-lg">
+                    <Sparkles className="w-4 h-4" />
+                    <motion.div
+                      className="absolute inset-0 rounded-lg"
+                      animate={{ boxShadow: ['0 0 0 0 rgba(139,92,246,0)', '0 0 0 4px rgba(139,92,246,0.1)', '0 0 0 0 rgba(139,92,246,0)'] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                  </Button>
+                </div>
               </TooltipTrigger>
               <TooltipContent>AI Assistant</TooltipContent>
             </Tooltip>
@@ -330,16 +336,31 @@ export default function CrmLayout() {
 
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
+          {/* Mobile backdrop */}
+          <AnimatePresence>
+            {isMobile && sidebarOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
+          </AnimatePresence>
+
           {/* Sidebar */}
           <AnimatePresence>
             {sidebarOpen && (
               <motion.aside
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 240, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
+                initial={isMobile ? { x: -280, opacity: 0 } : { width: 0, opacity: 0 }}
+                animate={isMobile ? { x: 0, opacity: 1 } : { width: 256, opacity: 1 }}
+                exit={isMobile ? { x: -280, opacity: 0 } : { width: 0, opacity: 0 }}
                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
-                  'border-r shrink-0 overflow-hidden hidden md:flex flex-col',
+                  'border-r shrink-0 overflow-hidden flex flex-col',
+                  'fixed md:relative inset-y-0 left-0 z-50',
+                  isMobile && 'w-[280px]',
                   isDark ? 'border-white/[0.06] bg-[#0a0a0a]' : 'border-black/[0.06] bg-white'
                 )}
               >
@@ -349,7 +370,7 @@ export default function CrmLayout() {
                     return (
                       <button
                         key={item.id}
-                        onClick={() => navigateTo(item.id)}
+                        onClick={() => { navigateTo(item.id); if (isMobile) setSidebarOpen(false); }}
                         className={cn(
                           'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 group',
                           isActive
