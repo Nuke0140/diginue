@@ -8,6 +8,7 @@ import SalesLayout from '@/modules/sales/sales-layout';
 import ErpLayout from '@/modules/erp/erp-layout';
 import MarketingLayout from '@/modules/marketing/marketing-layout';
 import FinanceLayout from '@/modules/finance/finance-layout';
+import RetentionLayout from '@/modules/retention/retention-layout';
 import LoginPage from '@/modules/auth/login-page';
 import RegisterPage from '@/modules/auth/register-page';
 import ForgotPasswordPage from '@/modules/auth/forgot-password-page';
@@ -61,6 +62,8 @@ export default function Home() {
     content = <MarketingLayout />;
   } else if (showModule && activeModule === 'finance') {
     content = <FinanceLayout />;
+  } else if (showModule && activeModule === 'growth') {
+    content = <RetentionLayout />;
   } else if (showDashboard) {
     content = <WindowsDesktop />;
   } else if (showManagement && CurrentPage) {
