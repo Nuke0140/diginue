@@ -11,6 +11,7 @@ import FinanceLayout from '@/modules/finance/finance-layout';
 import RetentionLayout from '@/modules/retention/retention-layout';
 import AnalyticsLayout from '@/modules/analytics/analytics-layout';
 import AutomationLayout from '@/modules/automation/automation-layout';
+import SettingsLayout from '@/modules/settings/settings-layout';
 import LoginPage from '@/modules/auth/login-page';
 import RegisterPage from '@/modules/auth/register-page';
 import ForgotPasswordPage from '@/modules/auth/forgot-password-page';
@@ -70,6 +71,8 @@ export default function Home() {
     content = <AnalyticsLayout />;
   } else if (showModule && activeModule === 'automation') {
     content = <AutomationLayout />;
+  } else if (showModule && activeModule === 'settings') {
+    content = <SettingsLayout />;
   } else if (showDashboard) {
     content = <WindowsDesktop />;
   } else if (showManagement && CurrentPage) {
