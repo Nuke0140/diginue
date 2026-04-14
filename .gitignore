@@ -52,3 +52,9 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# python backend
+backend/.venv/
+backend/__pycache__/
+backend/.mypy_cache/
+backend/.pytest_cache/
