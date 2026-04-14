@@ -5,6 +5,10 @@ import type {
   FollowUp, Proposal, LeadSourceEntry as LeadSource, QualificationData, WinLossData
 } from '../types';
 
+  Contact, Company, Lead, Deal, Activity, CrmTask, CrmNote,
+  Segment, LifecycleStageData, AiInsight
+} from '../types';
+
 export const mockContacts: Contact[] = [
   { id: 'c1', firstName: 'Arjun', lastName: 'Mehta', email: 'arjun@techcorp.in', phone: '+91 98765 43210', company: 'TechCorp India', companyId: 'co1', title: 'CTO', source: 'linkedin', lifecycleStage: 'opportunity', owner: 'Priya Sharma', ownerId: 'u1', healthScore: 87, aiIntent: 'high', tags: ['enterprise', 'AI', 'SaaS'], lastInteraction: '2 hours ago', createdAt: '2025-01-15', socialProfiles: [{ platform: 'LinkedIn', url: '#' }], address: { city: 'Mumbai', state: 'MH', country: 'India' } },
   { id: 'c2', firstName: 'Sarah', lastName: 'Chen', email: 'sarah@innovate.io', phone: '+1 555 123 4567', company: 'Innovate Labs', companyId: 'co2', title: 'VP of Product', source: 'referral', lifecycleStage: 'sql', owner: 'Rahul Verma', ownerId: 'u2', healthScore: 72, aiIntent: 'medium', tags: ['product', 'startup'], lastInteraction: '1 day ago', createdAt: '2025-02-20', socialProfiles: [{ platform: 'LinkedIn', url: '#' }], address: { city: 'San Francisco', state: 'CA', country: 'USA' } },
