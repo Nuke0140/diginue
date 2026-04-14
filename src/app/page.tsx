@@ -3,8 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth-store';
 import WindowsDesktop from '@/components/dashboard/windows-desktop';
-import CrmLayout from '@/modules/crm/crm-layout';
-import SalesLayout from '@/modules/sales/sales-layout';
+import CrmSalesLayout from '@/modules/crm-sales/crm-sales-layout';
 import ErpLayout from '@/modules/erp/erp-layout';
 import MarketingLayout from '@/modules/marketing/marketing-layout';
 import FinanceLayout from '@/modules/finance/finance-layout';
@@ -55,10 +54,8 @@ export default function Home() {
 
   let content: React.ReactNode;
 
-  if (showModule && activeModule === 'crm') {
-    content = <CrmLayout />;
-  } else if (showModule && activeModule === 'sales') {
-    content = <SalesLayout />;
+  if (showModule && (activeModule === 'crm' || activeModule === 'sales')) {
+    content = <CrmSalesLayout />;
   } else if (showModule && activeModule === 'erp') {
     content = <ErpLayout />;
   } else if (showModule && activeModule === 'marketing') {

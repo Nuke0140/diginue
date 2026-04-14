@@ -39,9 +39,8 @@ interface Module {
 const darkModules: Module[] = [
   { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard, shade: 'bg-white/[0.12] hover:bg-white/[0.16]', span: 'col-span-2', description: 'Overview & Analytics' },
   { id: 'erp', name: 'ERP', icon: Factory, shade: 'bg-white/[0.08] hover:bg-white/[0.12]', span: 'col-span-1', description: 'Enterprise Resource' },
-  { id: 'crm', name: 'CRM', icon: Users, shade: 'bg-white/[0.18] hover:bg-white/[0.22]', span: 'col-span-1', description: 'Customer Relations' },
+  { id: 'crm', name: 'CRM & Sales', icon: Users, shade: 'bg-white/[0.18] hover:bg-white/[0.22]', span: 'col-span-2', description: 'Contacts, Pipeline & Revenue' },
   { id: 'marketing', name: 'Marketing', icon: Megaphone, shade: 'bg-white/[0.06] hover:bg-white/[0.10]', span: 'col-span-2', description: 'Campaigns & Outreach' },
-  { id: 'sales', name: 'Sales & Lead', icon: TrendingUp, shade: 'bg-white/[0.14] hover:bg-white/[0.18]', span: 'col-span-1', description: 'Pipeline & Deals' },
   { id: 'finance', name: 'Finance', icon: DollarSign, shade: 'bg-white/[0.10] hover:bg-white/[0.14]', span: 'col-span-1', description: 'Accounts & Budget' },
   { id: 'growth', name: 'Refresh & Growth', icon: Sprout, shade: 'bg-white/[0.16] hover:bg-white/[0.20]', span: 'col-span-2', description: 'Strategy & Expansion' },
   { id: 'analytics', name: 'Analytics & BI', icon: BarChart3, shade: 'bg-white/[0.07] hover:bg-white/[0.11]', span: 'col-span-1', description: 'Insights & Reports' },
@@ -52,9 +51,8 @@ const darkModules: Module[] = [
 const lightModules: Module[] = [
   { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard, shade: 'bg-black/[0.08] hover:bg-black/[0.12]', span: 'col-span-2', description: 'Overview & Analytics' },
   { id: 'erp', name: 'ERP', icon: Factory, shade: 'bg-black/[0.05] hover:bg-black/[0.09]', span: 'col-span-1', description: 'Enterprise Resource' },
-  { id: 'crm', name: 'CRM', icon: Users, shade: 'bg-black/[0.12] hover:bg-black/[0.16]', span: 'col-span-1', description: 'Customer Relations' },
+  { id: 'crm', name: 'CRM & Sales', icon: Users, shade: 'bg-black/[0.12] hover:bg-black/[0.16]', span: 'col-span-2', description: 'Contacts, Pipeline & Revenue' },
   { id: 'marketing', name: 'Marketing', icon: Megaphone, shade: 'bg-black/[0.04] hover:bg-black/[0.08]', span: 'col-span-2', description: 'Campaigns & Outreach' },
-  { id: 'sales', name: 'Sales & Lead', icon: TrendingUp, shade: 'bg-black/[0.10] hover:bg-black/[0.14]', span: 'col-span-1', description: 'Pipeline & Deals' },
   { id: 'finance', name: 'Finance', icon: DollarSign, shade: 'bg-black/[0.07] hover:bg-black/[0.11]', span: 'col-span-1', description: 'Accounts & Budget' },
   { id: 'growth', name: 'Refresh & Growth', icon: Sprout, shade: 'bg-black/[0.11] hover:bg-black/[0.15]', span: 'col-span-2', description: 'Strategy & Expansion' },
   { id: 'analytics', name: 'Analytics & BI', icon: BarChart3, shade: 'bg-black/[0.06] hover:bg-black/[0.10]', span: 'col-span-1', description: 'Insights & Reports' },
