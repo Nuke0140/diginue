@@ -3,11 +3,7 @@ import type {
   Segment, LifecycleStageData, AiInsight,
   SalesForecast, TeamPerformance,
   FollowUp, Proposal, LeadSourceEntry as LeadSource, QualificationData, WinLossData
-} from '../types';
 
-  Contact, Company, Lead, Deal, Activity, CrmTask, CrmNote,
-  Segment, LifecycleStageData, AiInsight
-} from '../types';
 
 export const mockContacts: Contact[] = [
   { id: 'c1', firstName: 'Arjun', lastName: 'Mehta', email: 'arjun@techcorp.in', phone: '+91 98765 43210', company: 'TechCorp India', companyId: 'co1', title: 'CTO', source: 'linkedin', lifecycleStage: 'opportunity', owner: 'Priya Sharma', ownerId: 'u1', healthScore: 87, aiIntent: 'high', tags: ['enterprise', 'AI', 'SaaS'], lastInteraction: '2 hours ago', createdAt: '2025-01-15', socialProfiles: [{ platform: 'LinkedIn', url: '#' }], address: { city: 'Mumbai', state: 'MH', country: 'India' } },
