@@ -150,6 +150,7 @@ export default function WindowsDesktop() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isDark = theme === 'dark' || (!theme && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const modules = isDark ? darkModules : lightModules;
+  const displayName = user?.full_name || user?.email || 'User';
 
   const currentHour = new Date().getHours();
   const greeting =
@@ -209,7 +210,7 @@ export default function WindowsDesktop() {
         >
           <div>
             <h2 className={`text-xl md:text-2xl font-bold tracking-tight transition-colors duration-500 ${isDark ? 'text-white/90' : 'text-black/90'}`}>
-              {greeting}, <span className={isDark ? 'text-white' : 'text-black'}>{user?.name || 'User'}</span>
+              {greeting}, <span className={isDark ? 'text-white' : 'text-black'}>{displayName}</span>
             </h2>
             <p className={`text-sm mt-0.5 transition-colors duration-500 ${isDark ? 'text-white/30' : 'text-black/30'}`}>
               Welcome to your enterprise command center
@@ -262,7 +263,7 @@ export default function WindowsDesktop() {
                   : 'bg-black text-white shadow-black/10'
                   }`}
               >
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {displayName.charAt(0).toUpperCase()}
               </motion.button>
 
               {/* User dropdown */}
@@ -277,7 +278,7 @@ export default function WindowsDesktop() {
                 >
                   <div className={`px-3 py-2 border-b mb-1 ${isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'}`}>
                     <p className={`text-sm font-semibold ${isDark ? 'text-white/90' : 'text-black/90'}`}>
-                      {user?.name || 'User'}
+                      {displayName}
                     </p>
                     <p className={`text-xs ${isDark ? 'text-white/40' : 'text-black/40'}`}>{user?.email || 'user@example.com'}</p>
                   </div>

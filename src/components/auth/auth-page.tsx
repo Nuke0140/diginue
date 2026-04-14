@@ -36,13 +36,15 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    if (isAuthView) {
-      login(email, password);
-    } else {
-      signup(name, email, password);
+    try {
+      if (isAuthView) {
+        await login(email, password);
+      } else {
+        await signup({ full_name: name, email, password });
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   if (!mounted) return null;
