@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import List, Optional
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+
+    @field_validator("backend_cors_origins", mode="before")
+    @classmethod
+    def assemble_cors(cls, v: str | List[str]) -> List[str]:
+        if isinstance(v, str):
+            return [origin.strip().strip('"').strip("'") for origin in v.split(",") if origin.strip()]
+        return v
 
 
 @lru_cache
